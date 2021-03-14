@@ -44,6 +44,9 @@ public class Enemy : MonoBehaviour
     [Header("子彈補充時間"), Range(0, 5)]
     public float AddBulletTime = 1;
 
+    [Header("攻擊力"), Range(10, 500)]
+    public float Attack = 5;
+
     private float hp = 100f;
 
     //是否再補充子彈
@@ -107,6 +110,8 @@ public class Enemy : MonoBehaviour
             Timer = 0;                                                                      //時間歸0
             GameObject temp = Instantiate(Bullet, PointFire.position, PointFire.rotation);  //子彈暫存 = 生成物件(子彈物件，子彈生成座標，子彈生成角度)
             temp.GetComponent<Rigidbody>().AddForce(PointFire.right * -BulletSpeed);        //暫存子彈.取得元件<鋼體>().添加推力(子彈生成位置.前方 * 子彈速度)
+                                                                                            
+            temp.GetComponent<Bullet>().Attack = Attack;                                    //暫存子彈.取得子彈腳本<子彈腳本>().傷害 = 敵人傷害
             ManageBulletCount();
         }
         else

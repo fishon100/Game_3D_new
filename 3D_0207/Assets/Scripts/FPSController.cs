@@ -58,6 +58,8 @@ public class FPSController : MonoBehaviour
     private bool isAddBullet;
     #endregion
 
+    
+
 
     private Animator ani;
     private Rigidbody rig;
@@ -69,6 +71,9 @@ public class FPSController : MonoBehaviour
         ani = GetComponent<Animator>();
         rig = GetComponent<Rigidbody>();
         aud = GetComponent<AudioSource>();
+
+        TraCam = transform.Find("Camera");
+        TraMainCar = transform.Find("Main Camera");
     }
 
     //在遊戲場景畫出偵測圖形
@@ -195,6 +200,81 @@ public class FPSController : MonoBehaviour
             }
             TextBulletCurrent.text = BulletCurrent.ToString();     //文字:子彈目前數量.文字 = 子彈目前數量.轉成文字()
             TextBulletTotal.text = BulletTotal.ToString();         //文字:總子彈數量.文字 = 總子彈數量量.轉成文字()
+        }
+    }
+
+
+    /// <summary>
+    /// 血條
+    /// </summary>
+    private float hp = 100f;
+    private float hpMax = 100f;
+
+    [Header("血量與血條")]
+    public Image HPImg;
+    public Text HPText;
+
+    /// <summary>
+    /// 受到傷害
+    /// </summary>
+    /// <param name="getDamege"></param>
+    private void Damege(float getDamege)
+    {
+        if (hp <= 0) return;  //如果血條規0  則跳過以下程式運作
+        hp -= getDamege;
+
+        if (hp <= 0) Dead();
+
+        HPText.text = hp.ToString();     //血條文字.文字 = 浮點數血量.轉呈字串
+        HPImg.fillAmount = hp / hpMax;
+    }
+
+    private void Dead()
+    {
+        hp = 0;
+        ani.SetTrigger("死亡觸發");
+        
+        this.enabled = false;                            //此腳本.啟動 = 關閉
+
+        StartCoroutine(CameraMove());
+    }
+
+    [Header("攝相機照出死亡動畫")]
+    private Transform TraCam;
+    private Transform TraMainCar;
+
+    private IEnumerator CameraMove()
+    {
+        TraMainCar.LookAt(transform);      //攝相機面向
+        TraCam.LookAt(transform);
+
+        Vector3 posCam = TraMainCar.position;    //取得 =  攝相機. 座標
+
+        float yCam = posCam.y;                   //取得 = 攝相機.y
+        float yUP = yCam + 5;                    //攝相機往上 =  攝相機.y + 5
+
+        //慢慢往上移 每次移動0.05
+        while(yCam < yUP)
+        {
+            //遞增
+            yCam += 0.05f;                     
+            posCam.y = yCam;                      //更新 三維向量
+
+            TraMainCar.position = posCam;         //更新 攝相機 座標
+            TraCam.position = posCam;
+
+            yield return new WaitForSeconds(0.05f);  //等待
+        }
+    }
+
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "子彈")
+        {
+            float damege = collision.gameObject.GetComponent<Bullet>().Attack;
+            Damege(damege);
         }
     }
 }
