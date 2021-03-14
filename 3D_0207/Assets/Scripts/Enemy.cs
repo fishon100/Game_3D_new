@@ -178,7 +178,14 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.tag == "子彈")
         {
-            float damege = collision.gameObject.GetComponent<Bullet>().Attack; 
+            float damege = collision.gameObject.GetComponent<Bullet>().Attack;
+
+            //如果(碰撞.第一個碰撞器.這個碰撞器.種類.圓形
+            if (collision.contacts[0].thisCollider.GetType().Equals(typeof(SphereCollider)))
+            {
+                print("暴頭");
+                Damege(100); //受到100傷害
+            }
             Damege(damege);
         }
     }

@@ -7,11 +7,15 @@ using System.Collections;
 public class FPSController : MonoBehaviour
 {
     #region 基本腳色欄位
-    [Header("移動速度"), Range(0, 2000)]
+    [Header("移動速度"), Range(0, 500)]
     public float Speed;
-    [Header("旋轉速度"), Range(0, 2000)]
+    [Header("旋轉速度"), Range(0, 10)]
     public float Turn;
-    [Header("跳躍高度"), Range(0, 1000)]
+    [Header("上下旋轉速度"), Range(0, 10)]
+    public float  UDSpeed;
+    [Header("上下旋轉限制範圍")]
+    public Vector2 UDRange = new Vector2(1, 10);
+    [Header("跳躍高度"), Range(0, 500)]
     public float jump;
     [Header("地板偵測位移")]
     public Vector3 FloorOffset;
@@ -58,8 +62,8 @@ public class FPSController : MonoBehaviour
     private bool isAddBullet;
     #endregion
 
-    
 
+    private Transform Target;
 
     private Animator ani;
     private Rigidbody rig;
@@ -72,8 +76,9 @@ public class FPSController : MonoBehaviour
         rig = GetComponent<Rigidbody>();
         aud = GetComponent<AudioSource>();
 
-        TraCam = transform.Find("Camera");
-        TraMainCar = transform.Find("Main Camera");
+        TraCam = transform.Find("攝相機物件").Find("Camera");
+        TraMainCar = transform.Find("攝相機物件").Find("Main Camera");
+        Target = transform.Find("上下看目標");
     }
 
     //在遊戲場景畫出偵測圖形
@@ -106,7 +111,13 @@ public class FPSController : MonoBehaviour
         float x = Input.GetAxis("Mouse X");                 //滑鼠左右轉
         transform.Rotate(0, x * Time.deltaTime * Turn, 0);
 
-       
+        float y = Input.GetAxis("Mouse Y");                 //滑鼠左右轉
+        Vector3 posTarget = Target.localPosition;                //取得 = 目標.自身高度座標
+        posTarget.y += y * Time.deltaTime * UDSpeed;        //目標座標.Y += Y軸累加 * 速度
+        posTarget.y = Mathf.Clamp(posTarget.y, UDRange.x, UDRange.y);    //目標座標.Y = 限制範圍(目標座標.Y ，範圍.X, 範圍.Y)
+        Target.localPosition = posTarget;                        //目標.位置 = 目標座標.Y
+
+
 
     }
 
