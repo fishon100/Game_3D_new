@@ -68,6 +68,9 @@ public class FPSController : MonoBehaviour
     private Animator ani;
     private Rigidbody rig;
 
+    //找到GM腳本
+    private GameManager gm;
+
 
     private void Awake()
     {
@@ -75,6 +78,8 @@ public class FPSController : MonoBehaviour
         ani = GetComponent<Animator>();
         rig = GetComponent<Rigidbody>();
         aud = GetComponent<AudioSource>();
+        gm = GetComponent<GameManager>(); 
+       
 
         TraCam = transform.Find("攝相機物件").Find("Camera");
         TraMainCar = transform.Find("攝相機物件").Find("Main Camera");
@@ -240,6 +245,13 @@ public class FPSController : MonoBehaviour
         HPImg.fillAmount = hp / hpMax;
     }
 
+
+    /// <summary>
+    /// 紀錄被誰打到
+    /// </summary>
+    private string nameEnemy;
+
+
     private void Dead()
     {
         hp = 0;
@@ -248,6 +260,15 @@ public class FPSController : MonoBehaviour
         this.enabled = false;                            //此腳本.啟動 = 關閉
 
         StartCoroutine(CameraMove());
+
+        //要更新玩家死亡次數
+        //gm腳本.裡面的死亡次數(腳本.玩家殺敵，腳本.文字玩家殺敵數，"玩家"，腳本.玩家死亡數
+        gm.UpdateDataDead( gm.KillPlayer, gm.TextDataPlayer, "玩家",ref gm.DeadPlayer);
+
+        if (nameEnemy.Contains("敵人1")) gm.UpdateDataKill(ref gm.KillNpc1, gm.TextDataNpc1, "敵方1", gm.DeadNpc1);
+        else if (nameEnemy.Contains("敵人2")) gm.UpdateDataKill(ref gm.KillNpc2, gm.TextDataNpc2, "敵方2", gm.DeadNpc2);
+        else if (nameEnemy.Contains("敵人3")) gm.UpdateDataKill(ref gm.KillNpc3, gm.TextDataNpc3, "敵方3", gm.DeadNpc3);
+        else if (nameEnemy.Contains("敵人4")) gm.UpdateDataKill(ref gm.KillNpc4, gm.TextDataNpc4, "敵方4", gm.DeadNpc4);
     }
 
     [Header("攝相機照出死亡動畫")]
@@ -278,6 +299,7 @@ public class FPSController : MonoBehaviour
         }
     }
 
+    
 
 
     private void OnCollisionEnter(Collision collision)

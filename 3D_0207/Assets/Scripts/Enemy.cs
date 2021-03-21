@@ -16,6 +16,9 @@ public class Enemy : MonoBehaviour
     //動畫管理器
     private Animator Ani;
 
+    //找到gm腳本
+    private GameManager gm;
+
     //時間管理器
     private float Timer;
 
@@ -59,6 +62,9 @@ public class Enemy : MonoBehaviour
         Player = GameObject.Find("玩家").transform;    //玩家資訊 = 物件.找到("名稱").位置
         Nav.speed = Speed;                             //Nav.速度 = 公開速度
         Nav.stoppingDistance = RangeAttack;            //Nav.停止距離 = 公開攻擊範圍
+        
+        //暫存 = 取得<gm腳本>
+        gm = GetComponent<GameManager>();
     }
 
     //繪製圖形
@@ -112,11 +118,13 @@ public class Enemy : MonoBehaviour
             temp.GetComponent<Rigidbody>().AddForce(PointFire.right * -BulletSpeed);        //暫存子彈.取得元件<鋼體>().添加推力(子彈生成位置.前方 * 子彈速度)
                                                                                             
             temp.GetComponent<Bullet>().Attack = Attack;                                    //暫存子彈.取得子彈腳本<子彈腳本>().傷害 = 敵人傷害
+            temp.name += name;
             ManageBulletCount();
         }
         else
         {
             Timer += Time.deltaTime;
+            FaceToPlayer();
         }
     }
 
@@ -163,15 +171,29 @@ public class Enemy : MonoBehaviour
     /// <param name="getDamege"></param>
     private void Damege(float getDamege)
     {
+        if (hp <= 0) return;
         hp -= getDamege;
+
+        if (hp <= 0) Dead();
+
     }
 
     private void Dead()
     {
+        
         Ani.SetTrigger("死亡觸發");
         GetComponent<CapsuleCollider>().enabled = false; //取得此物件的碰撞器.啟動 = 關閉
         GetComponent<SphereCollider>().enabled = false;
         this.enabled = false;                            //此腳本.啟動 = 關閉
+
+        //要更新玩家殺敵數量
+        //gm腳本.裡面的更新殺敵數(腳本.玩家殺敵，腳本.文字玩家殺敵數，"玩家"，腳本.玩家死亡數
+        gm.UpdateDataKill(ref gm.KillPlayer, gm.TextDataPlayer, "玩家0",  gm.DeadPlayer);
+        if (name == "敵人1") gm.UpdateDataDead(gm.KillNpc1, gm.TextDataNpc1, "敵方1", ref gm.DeadNpc1);
+        else if (name == "敵人2") gm.UpdateDataDead(gm.KillNpc2, gm.TextDataNpc2, "敵方2", ref gm.DeadNpc2);
+        else if (name == "敵人3") gm.UpdateDataDead(gm.KillNpc3, gm.TextDataNpc3, "敵方3", ref gm.DeadNpc3);
+        else if (name == "敵人4") gm.UpdateDataDead(gm.KillNpc4, gm.TextDataNpc4, "敵方4", ref gm.DeadNpc4);
+
     }
 
     private void OnCollisionEnter(Collision collision)
