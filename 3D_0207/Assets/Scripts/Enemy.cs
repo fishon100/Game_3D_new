@@ -173,6 +173,7 @@ public class Enemy : MonoBehaviour
     {
         if (hp <= 0) return;
         hp -= getDamege;
+        Ani.SetTrigger("受傷觸發");
 
         if (hp <= 0) Dead();
 
@@ -188,11 +189,12 @@ public class Enemy : MonoBehaviour
 
         //要更新玩家殺敵數量
         //gm腳本.裡面的更新殺敵數(腳本.玩家殺敵，腳本.文字玩家殺敵數，"玩家"，腳本.玩家死亡數
-        gm.UpdateDataKill(ref gm.KillPlayer, gm.TextDataPlayer, "玩家0",  gm.DeadPlayer);
-        if (name == "敵人1") gm.UpdateDataDead(gm.KillNpc1, gm.TextDataNpc1, "敵方1", ref gm.DeadNpc1);
-        else if (name == "敵人2") gm.UpdateDataDead(gm.KillNpc2, gm.TextDataNpc2, "敵方2", ref gm.DeadNpc2);
-        else if (name == "敵人3") gm.UpdateDataDead(gm.KillNpc3, gm.TextDataNpc3, "敵方3", ref gm.DeadNpc3);
-        else if (name == "敵人4") gm.UpdateDataDead(gm.KillNpc4, gm.TextDataNpc4, "敵方4", ref gm.DeadNpc4);
+        gm.UpdateDataKill(ref GameManager.KillPlayer, gm.TextDataPlayer, "玩家", GameManager.DeadPlayer);
+
+        if (name == "敵人1") gm.UpdateDataDead(GameManager.KillNpc1, gm.TextDataNpc1, "敵方1", ref GameManager.DeadNpc1);
+        else if (name == "敵人2") gm.UpdateDataDead(GameManager.KillNpc2, gm.TextDataNpc2, "敵方2", ref GameManager.DeadNpc2);
+        else if (name == "敵人3") gm.UpdateDataDead(GameManager.KillNpc3, gm.TextDataNpc3, "敵方3", ref GameManager.DeadNpc3);
+        else if (name == "敵人4") gm.UpdateDataDead(GameManager.KillNpc4, gm.TextDataNpc4, "敵方4", ref GameManager.DeadNpc4);
 
     }
 

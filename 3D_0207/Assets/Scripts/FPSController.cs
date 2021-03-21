@@ -263,12 +263,12 @@ public class FPSController : MonoBehaviour
 
         //要更新玩家死亡次數
         //gm腳本.裡面的死亡次數(腳本.玩家殺敵，腳本.文字玩家殺敵數，"玩家"，腳本.玩家死亡數
-        gm.UpdateDataDead( gm.KillPlayer, gm.TextDataPlayer, "玩家",ref gm.DeadPlayer);
+        gm.UpdateDataDead(GameManager.KillPlayer, gm.TextDataPlayer, "玩家",ref GameManager.DeadPlayer);
 
-        if (nameEnemy.Contains("敵人1")) gm.UpdateDataKill(ref gm.KillNpc1, gm.TextDataNpc1, "敵方1", gm.DeadNpc1);
-        else if (nameEnemy.Contains("敵人2")) gm.UpdateDataKill(ref gm.KillNpc2, gm.TextDataNpc2, "敵方2", gm.DeadNpc2);
-        else if (nameEnemy.Contains("敵人3")) gm.UpdateDataKill(ref gm.KillNpc3, gm.TextDataNpc3, "敵方3", gm.DeadNpc3);
-        else if (nameEnemy.Contains("敵人4")) gm.UpdateDataKill(ref gm.KillNpc4, gm.TextDataNpc4, "敵方4", gm.DeadNpc4);
+        if (nameEnemy.Contains("敵人1")) gm.UpdateDataKill(ref GameManager.KillNpc1, gm.TextDataNpc1, "敵方1", GameManager.DeadNpc1);
+        else if (nameEnemy.Contains("敵人2")) gm.UpdateDataKill(ref GameManager.KillNpc2, gm.TextDataNpc2, "敵方2", GameManager.DeadNpc2);
+        else if (nameEnemy.Contains("敵人3")) gm.UpdateDataKill(ref GameManager.KillNpc3, gm.TextDataNpc3, "敵方3", GameManager.DeadNpc3);
+        else if (nameEnemy.Contains("敵人4")) gm.UpdateDataKill(ref GameManager.KillNpc4, gm.TextDataNpc4, "敵方4", GameManager.DeadNpc4);
     }
 
     [Header("攝相機照出死亡動畫")]
